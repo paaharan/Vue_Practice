@@ -2,9 +2,11 @@
   <div id="app">
     <search-bar v-on:changekeyword="sendkeyword"> </search-bar>
     <img src="./assets/logo.png">
-
+  <top-ten v-bind:topten="topten"></top-ten>
     <naver-list v-bind:top="tophun"></naver-list>
+
   </div>
+
 </template>
 
 <script>
@@ -12,6 +14,7 @@
 import axios from 'axios'
 import cleanstr from './add.js/cleanstring'
 import NaverList from './components/NaverList'
+import TopTen from './components/TopTen'
 import SearchBar from './components/SearchBar'
 let clientId = "kX5DfcnQ93ffex7NFNQ7";
 let clientSecret = "nUh3qVrDUW";
@@ -20,13 +23,15 @@ export default {
   components: {
     SearchBar,
     // Child
-    NaverList
+    NaverList,
+    TopTen
   },
   data() {
     return {
       title: [],
       link: [],
       tophun: [],
+      topten: [],
       parentkeyword:"김소혜"
     }
   },
@@ -51,23 +56,30 @@ export default {
         // console.log(result.data.items);
         let news = result.data.items;
         for (let i in news) {
+
           var temp = {
             title: cleanstr(news[i].title, "title"),
             link: cleanstr(news[i].originallink, "link")
           };
           this.tophun.push(temp);
-
+          if(i < 10)
+            this.topten.push(temp);
         }
       })
     },
       sendkeyword: function (val) {
         this.parentkeyword = val;
         this.tophun = [];
+        this.topten = [];
         this.search();
       }
     }
 
 }
+// for(var j=0; j<10; j++)
+//   this.topten[j] = this.tophun[j];
+
+
 </script>
 
 <style>
